@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# Novel Git (仮)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+執筆者の「迷い」を資産に変える、バージョン管理機能付き小説エディタ。
+従来のテキストエディタにはない「執筆プロセスの可視化」を実現し、プログラミングにおけるGitの利便性を小説執筆向けに再定義します。
 
-Currently, two official plugins are available:
+## 主な機能 (予定含む)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **縦書き/横書き切り替え**: ボタン一つでレイアウトを変更可能
+*   **オートセーブ & ローカルDB**: 執筆内容はブラウザ内のIndexedDBに自動保存
+*   **履歴スナップショット**: 任意のタイミングで版を保存し、過去の状態に戻れる
+*   **比較機能 (Diff)**: 過去の版と現在の版を並べて比較
+*   **PWA (Progressive Web App)**: アプリとしてインストール可能、オフライン動作対応
 
-## React Compiler
+## 技術スタック
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+*   **Frontend**: React (Vite), TypeScript
+*   **Styling**: Tailwind CSS, CSS Modules
+*   **State Management**: Zustand
+*   **Database**: Dexie.js (IndexedDB wrapper)
+*   **PWA**: vite-plugin-pwa
 
-## Expanding the ESLint configuration
+## 環境構築手順
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+このプロジェクトは Node.js 環境で動作します。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 前提条件
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+*   Node.js (v18, v20, またはそれ以上)
+*   npm (Node.jsに含まれています)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### インストール
+
+リポジトリをクローンし、依存パッケージをインストールします。
+
+```bash
+# リポジトリのクローン
+git clone https://github.com/N0ntar0/Nit-Novel-Git-.git
+cd Nit-Novel-Git-
+
+# 依存パッケージのインストール
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 開発サーバーの起動
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+ローカルで開発用サーバーを立ち上げます。
+起動後、ブラウザで `http://localhost:5173` にアクセスしてください。
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
+```
+
+### アプリケーションのビルド
+
+本番環境向けにファイルをビルドします。`dist` フォルダに生成されます。
+
+```bash
+npm run build
+```
+
+### プレビュー
+
+ビルドされたアプリケーションをローカルで確認します。
+
+```bash
+npm run preview
 ```
