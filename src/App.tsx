@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import { WritingCanvas } from './components/Editor/WritingCanvas'
 import { HistoryTimeline } from './components/Sidebar/HistoryTimeline'
+import { SplitPane } from './components/Layout/SplitPane'
+import { DiffView } from './components/Diff/DiffView'
 import { useEditorStore } from './store/editorStore'
 import { snapshotService } from './services/snapshotService'
 
 function App() {
   const { layoutMode, setLayoutMode, content } = useEditorStore()
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false)
+  const [isDiffViewOpen, setIsDiffViewOpen] = useState(false)
   const [commitMessage, setCommitMessage] = useState('')
+  const [currentDiffs, setCurrentDiffs] = useState<any[]>([])
 
   const handleCommit = async () => {
     if (!commitMessage.trim()) return
@@ -22,12 +26,22 @@ function App() {
       <aside className="w-80 bg-gray-900 text-white flex-shrink-0 flex flex-col p-4 border-r border-gray-800">
         <h1 className="text-2xl font-bold mb-6 tracking-wider">Novel Git</h1>
 
-        <div className="mb-6">
+        <div className="mb-6 space-y-2">
           <button
             onClick={() => setIsCommitModalOpen(true)}
             className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>+ スナップショット保存</span>
+          </button>
+
+          <button
+            onClick={() => setIsDiffViewOpen(!isDiffViewOpen)}
+            className={`w-full py-2 px-4 rounded-lg font-bold shadow transition-all flex items-center justify-center gap-2 cursor-pointer ${isDiffViewOpen
+              ? 'bg-indigo-800 text-indigo-200 border-2 border-indigo-500'
+              : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+              }`}
+          >
+            <span>{isDiffViewOpen ? 'エディタに戻る' : '比較モード (Diff)'}</span>
           </button>
         </div>
 
@@ -47,8 +61,23 @@ function App() {
       </aside>
 
       {/* Main Content */}
+      {/* Main Content */}
       <main className="flex-1 h-full overflow-hidden relative">
-        <WritingCanvas />
+        <SplitPane layoutMode={layoutMode} diffs={currentDiffs}>
+          {/* Pane 1: Editor (New) */}
+          <WritingCanvas />
+
+          {/* Pane 2: Diff (Old) - Null if not diff mode */}
+          {isDiffViewOpen ? (
+            <DiffView
+              currentContent={content}
+              layoutMode={layoutMode}
+              onDiffUpdate={setCurrentDiffs}
+            />
+          ) : null}
+        </SplitPane>
+
+        {/* Commit Modal Overlay */}
 
         {/* Commit Modal Overlay */}
         {isCommitModalOpen && (

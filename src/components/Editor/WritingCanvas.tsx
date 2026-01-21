@@ -4,26 +4,32 @@ import { useEditorStore } from '../../store/editorStore';
 export const WritingCanvas: React.FC = () => {
     const { content, setContent, layoutMode } = useEditorStore();
 
+    /* 
+   * CRITICAL: These base styles must be IDENTICAL to DiffView.tsx and LineRuler calculation
+   * Font Size: 18px
+   * Line Height: 36px (Exactly double for easy calc)
+   * Padding: 2rem (32px) container ?? No, padding must match Ruler offset?
+   * For Ruler Sync, it's easiest if padding-top (or right) is 0 or known valid.
+   * Let's set internal padding to a clean multiple or 0 for now.
+   */
+    const baseBg = layoutMode === 'vertical' ? 'bg-[#fdfbf7]' : 'bg-white';
+    const writingModeStyle = layoutMode === 'vertical' ? 'vertical-rl' : 'horizontal-tb';
+
     return (
-        <div className={`w-full h-full p-8 overflow-auto ${layoutMode === 'vertical' ? 'bg-[#fdfbf7]' : 'bg-white'}`}>
+        <div className={`w-full h-full overflow-auto ${baseBg} relative no-scrollbar`}>
             <textarea
-                className={`w-full h-full p-4 resize-none focus:outline-none bg-transparent text-lg leading-loose
-          ${layoutMode === 'vertical' ? 'vertical-rl' : ''}
+                className={`w-full h-full resize-none focus:outline-none bg-transparent 
           font-serif text-gray-800
         `}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="ここから執筆を開始..."
                 style={{
-                    minHeight: '80vh',
-                    // Tailwind "vertical-rl" class sets "writing-mode: vertical-rl", 
-                    // but we might need explicit style if Tailwind class is not working as expected yet.
-                    // We rely on standard Tailwind 'vertical-rl' or 'writing-vertical-rl' class?
-                    // Actually standard class is 'vertical-rl' for writing-mode utility in some versions, 
-                    // but let's check docs. Actually it is 'writing-vertical-rl' in Tailwind v3?
-                    // 'vertical-rl' is valid too? 
-                    // Let's use inline style for safety for writing-mode to be 100% sure in MVP.
-                    writingMode: layoutMode === 'vertical' ? 'vertical-rl' : 'horizontal-tb'
+                    writingMode: writingModeStyle,
+                    minHeight: '100%',
+                    padding: '36px', // 1 line padding
+                    fontSize: '18px',
+                    lineHeight: '36px',
                 }}
             />
         </div>
